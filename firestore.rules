@@ -48,6 +48,40 @@ service cloud.firestore {
         && data.createdAt is string && data.createdAt.size() <= 128;
     }
 
+    function isValidPortalNews(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() <= 200
+        && data.content is string && data.content.size() <= 20000
+        && (!data.keys().contains('imageUrl') || data.imageUrl == null || (data.imageUrl is string && data.imageUrl.size() <= 2000))
+        && (!data.keys().contains('author') || data.author == null || (data.author is string && data.author.size() <= 128))
+        && data.createdAt is string && data.createdAt.size() <= 128;
+    }
+
+    function isValidPortalLink(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() <= 200
+        && data.url is string && data.url.size() <= 2000
+        && (!data.keys().contains('description') || data.description == null || (data.description is string && data.description.size() <= 1000))
+        && (!data.keys().contains('category') || data.category == null || (data.category is string && data.category.size() <= 100));
+    }
+
+    function isValidPortalTask(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() <= 200
+        && (!data.keys().contains('description') || data.description == null || (data.description is string && data.description.size() <= 1000))
+        && (!data.keys().contains('dueDate') || data.dueDate == null || (data.dueDate is string && data.dueDate.size() <= 128))
+        && data.completed is bool
+        && (data.priority == 'Низкий' || data.priority == 'Средний' || data.priority == 'Высокий' || data.priority == 'Терміново')
+        && data.createdAt is string && data.createdAt.size() <= 128;
+    }
+
+    function isValidPortalSettings(data) {
+      return data.id is string && data.id.size() <= 128
+        && (!data.keys().contains('scheduleUrl') || data.scheduleUrl == null || (data.scheduleUrl is string && data.scheduleUrl.size() <= 2000))
+        && (!data.keys().contains('activeAlertRegion') || data.activeAlertRegion == null || (data.activeAlertRegion is string && data.activeAlertRegion.size() <= 128))
+        && (!data.keys().contains('alertActive') || data.alertActive == null || data.alertActive is bool);
+    }
+
     // Terminals Collection
     match /terminals/{terminalId} {
       allow read: if isSignedIn();
@@ -70,6 +104,38 @@ service cloud.firestore {
       allow create: if isSignedIn() && isValidId(instructionId) && isValidInstruction(request.resource.data);
       allow update: if isSignedIn() && isValidId(instructionId) && isValidInstruction(request.resource.data);
       allow delete: if isSignedIn() && isValidId(instructionId);
+    }
+
+    // Portal News Collection
+    match /portal_news/{newsId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(newsId) && isValidPortalNews(request.resource.data);
+      allow update: if isSignedIn() && isValidId(newsId) && isValidPortalNews(request.resource.data);
+      allow delete: if isSignedIn() && isValidId(newsId);
+    }
+
+    // Portal Links Collection
+    match /portal_links/{linkId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(linkId) && isValidPortalLink(request.resource.data);
+      allow update: if isSignedIn() && isValidId(linkId) && isValidPortalLink(request.resource.data);
+      allow delete: if isSignedIn() && isValidId(linkId);
+    }
+
+    // Portal Tasks Collection
+    match /portal_tasks/{taskId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(taskId) && isValidPortalTask(request.resource.data);
+      allow update: if isSignedIn() && isValidId(taskId) && isValidPortalTask(request.resource.data);
+      allow delete: if isSignedIn() && isValidId(taskId);
+    }
+
+    // Portal Settings Collection
+    match /portal_settings/{settingsId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(settingsId) && isValidPortalSettings(request.resource.data);
+      allow update: if isSignedIn() && isValidId(settingsId) && isValidPortalSettings(request.resource.data);
+      allow delete: if isSignedIn() && isValidId(settingsId);
     }
   }
 }

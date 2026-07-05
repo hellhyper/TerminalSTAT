@@ -47,6 +47,60 @@
         "createdAt": { "type": "string" }
       },
       "required": ["id", "title", "content", "category", "createdAt"]
+    },
+    "PortalNews": {
+      "title": "PortalNews",
+      "description": "Company news item with title, text content, and optional image.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "author": { "type": "string" }
+      },
+      "required": ["id", "title", "content", "createdAt"]
+    },
+    "PortalLink": {
+      "title": "PortalLink",
+      "description": "Useful links directory for the logistics hub.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "url": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" }
+      },
+      "required": ["id", "title", "url"]
+    },
+    "PortalTask": {
+      "title": "PortalTask",
+      "description": "Tasks and reminders for the warehouse team.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "dueDate": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "priority": { "type": "string", "enum": ["Низкий", "Средний", "Высокий", "Терміново"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "completed", "priority", "createdAt"]
+    },
+    "PortalSettings": {
+      "title": "PortalSettings",
+      "description": "Configuration settings for the portal like shift schedule link and air raid overrides.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "scheduleUrl": { "type": "string" },
+        "activeAlertRegion": { "type": "string" },
+        "alertActive": { "type": "boolean" }
+      },
+      "required": ["id"]
     }
   },
   "firestore": {
@@ -61,6 +115,22 @@
     "/instructions/{instructionId}": {
       "schema": "Instruction",
       "description": "Knowledge base articles and instructions."
+    },
+    "/portal_news/{newsId}": {
+      "schema": "PortalNews",
+      "description": "Team news and posts on the portal."
+    },
+    "/portal_links/{linkId}": {
+      "schema": "PortalLink",
+      "description": "Useful reference links on the portal."
+    },
+    "/portal_tasks/{taskId}": {
+      "schema": "PortalTask",
+      "description": "Team checklists and tasks on the portal."
+    },
+    "/portal_settings/{settingsId}": {
+      "schema": "PortalSettings",
+      "description": "Global settings for the portal dashboard."
     }
   }
 }
